@@ -16,7 +16,7 @@ signinRouter.post(
     body('password')
       .trim()
       .notEmpty()
-      .withMessage('You must supply a password'),
+      .withMessage('You must provide a password'),
   ],
   validateRequest,
   async (request: Request, response: Response) => {
