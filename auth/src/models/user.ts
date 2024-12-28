@@ -17,32 +17,36 @@ interface UserModel extends mongoose.Model<UserDoc> {
 //An interface that describes the properties that a user document has
 
 interface UserDoc extends mongoose.Document {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-}, {toJSON: {
-  transform(document, returnedObject){
-    returnedObject.id = returnedObject._id.toString()
+const userSchema = new mongoose.Schema(
+  {
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+  },
+  {
+    toJSON: {
+      transform(document, returnedObject) {
+        returnedObject.id = returnedObject._id.toString();
 
-    delete returnedObject.__v
-    delete returnedObject._id
-    delete returnedObject.password
+        delete returnedObject.__v;
+        delete returnedObject._id;
+        delete returnedObject.password;
+      },
+    },
   }
-}});
+);
 
-userSchema.pre('save', async function(done) {
+userSchema.pre('save', async function (done) {
   if (this.isModified('password')) {
-    const hashed = await Password.toHash(this.get('password'))
-    this.set('password',hashed)
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
   }
 
-  done()
-})
-
+  done();
+});
 
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
